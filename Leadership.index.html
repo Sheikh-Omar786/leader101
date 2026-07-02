@@ -1,0 +1,1584 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#0a192f">
+	<title>Speaking Like a Leader — Self-Study Suite</title>
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- DOMPurify (XSS Protection) -->
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+	<!-- FontAwesome Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<!-- Google Fonts (Optimized Payload) -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					fontFamily: {
+						sans: ['Inter', 'sans-serif'],
+						serif: ['Playfair Display', 'serif'],
+					},
+					colors: {
+						navy: {
+							950: '#030812',
+							900: '#0a192f',
+							850: '#102038',
+							800: '#112240',
+							700: '#172a45',
+							600: '#233554',
+						},
+						gold: {
+							400: '#f4d068',
+							500: '#d4af37',
+							600: '#aa8c2c',
+						}
+					}
+				}
+			}
+		}
+	</script>
+	<style>
+		/* Minimalist scrollbars */
+		::-webkit-scrollbar {
+			width: 4px;
+			height: 4px;
+		}
+
+		::-webkit-scrollbar-track {
+			background: #0a192f;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: #172a45;
+			border-radius: 2px;
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+			background: #d4af37;
+		}
+
+		/* Better Focus Visibility */
+		button:focus-visible,
+		input:focus-visible,
+		select:focus-visible {
+			outline: 2px solid #d4af37;
+			outline-offset: 2px;
+		}
+	</style>
+</head>
+
+<body class="bg-navy-950 text-slate-200 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+	<!-- Header & Minimalist Navigation -->
+	<header class="bg-navy-900 border-b border-navy-800 px-6 py-4 sticky top-0 z-50">
+		<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+			<!-- Brand / Title -->
+			<div class="flex items-center gap-3">
+				<div class="w-10 h-10 bg-gradient-to-tr from-gold-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
+					<i class="fa-solid fa-landmark text-navy-950 text-md"></i>
+				</div>
+				<div>
+					<h1 class="text-base font-bold text-white font-serif tracking-tight" data-i18n="app_title">Speaking Like a Leader</h1>
+					<p class="text-[10px] text-gold-400 font-semibold uppercase tracking-wider" data-i18n="app_subtitle">Holding the Line &bull; Self-Study Leadership Dashboard</p>
+				</div>
+			</div>
+
+			<!-- Minimal Navigation & i18n Switcher -->
+			<nav class="flex items-center bg-navy-950 p-1 rounded-xl border border-navy-800 gap-1 w-full md:w-auto justify-between md:justify-start" aria-label="Global Navigation">
+				<div class="flex gap-1">
+					<button onclick="switchView('deck')" id="tab-deck" class="px-4 py-2 text-xs font-bold rounded-lg transition bg-gold-500 text-navy-950 shadow">
+						<i class="fa-solid fa-desktop mr-1.5"></i><span data-i18n="menu_deck">Slide Deck</span>
+					</button>
+					<button onclick="switchView('metrics')" id="tab-metrics" class="px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white">
+						<i class="fa-solid fa-graduation-cap mr-1.5"></i><span data-i18n="menu_metrics">Study Guide</span>
+					</button>
+					<button onclick="switchView('sim')" id="tab-sim" class="px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white">
+						<i class="fa-solid fa-scale-balanced mr-1.5"></i><span data-i18n="menu_sim">Simulator</span>
+					</button>
+					<button onclick="switchView('planner')" id="tab-planner" class="px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white">
+						<i class="fa-solid fa-pen-nib mr-1.5"></i><span data-i18n="menu_planner">Planner</span>
+					</button>
+				</div>
+
+				<div class="w-[1px] h-6 bg-navy-800 mx-1 hidden md:block"></div>
+
+				<!-- English / French Toggle Button -->
+				<button aria-label="Toggle Language" onclick="toggleLanguage()" class="px-3 py-2 text-xs font-bold rounded-lg text-gold-400 hover:bg-navy-900 border border-navy-800 flex items-center gap-1.5">
+					<i class="fa-solid fa-globe text-xs"></i>
+					<span id="lang-indicator">FR</span>
+				</button>
+			</nav>
+		</div>
+	</header>
+
+	<!-- Global Toast Alert -->
+	<div id="toast" class="fixed bottom-6 right-6 z-50 bg-gold-500 text-navy-950 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition duration-300 font-bold text-xs uppercase tracking-wider">
+		<i class="fa-solid fa-circle-check text-sm"></i>
+		<span id="toast-text">Success</span>
+	</div>
+
+	<!-- Main Content Panels -->
+	<main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+
+		<!-- VIEW 1: STUDY SLIDE DECK WITH STUDY SCRIPTS -->
+		<section aria-label="Slide Deck Section" id="view-deck-section" class="space-y-4 w-full">
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+				<!-- Left: Beautiful Slide Display Canvas -->
+				<div id="slide-surface" class="lg:col-span-7 flex flex-col justify-between bg-navy-900 border border-navy-800 rounded-2xl shadow-xl p-6 md:p-8 relative min-h-[380px] md:min-h-[420px]">
+					<div class="flex justify-between items-center text-[10px] text-slate-500 uppercase tracking-widest font-semibold pb-4 border-b border-navy-800/40">
+						<span data-i18n="academy_watermark">Apex Banking Leadership Academy</span>
+						<span id="slide-counter-badge" class="text-gold-400 font-bold">Slide 1 / 16</span>
+					</div>
+
+					<!-- Slide Contents Injected Dynamically -->
+					<div id="slide-canvas-body" class="flex-grow flex flex-col justify-center py-6">
+						<!-- Loaded dynamically -->
+					</div>
+
+					<div class="text-[10px] text-slate-500 border-t border-navy-800/40 pt-4 flex justify-between items-center">
+						<span data-i18n="swipe_help"><i class="fa-solid fa-arrows-left-right mr-1.5"></i>Use arrow keys or swipe to navigate</span>
+						<span data-i18n="theme_text">Holding the Line</span>
+					</div>
+				</div>
+
+				<!-- Right: Dedicated Narration Study Panel -->
+				<div class="lg:col-span-5 flex flex-col bg-navy-900 border border-navy-800 rounded-2xl shadow-xl p-6 justify-center min-h-[380px] md:min-h-[420px]">
+					<div class="space-y-3 overflow-y-auto max-h-[340px]">
+						<h4 class="text-[10px] uppercase font-extrabold tracking-widest text-gold-400 flex items-center gap-1.5 border-b border-navy-800 pb-2">
+							<i class="fa-solid fa-microphone"></i>
+							<span data-i18n="study_narration_header">Narrative Study Script</span>
+						</h4>
+						<p id="voiceover-script-box" class="text-xs md:text-sm text-slate-300 italic leading-relaxed font-semibold">
+							Study narrative scripts load automatically here based on selected slide...
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Slide Flow Controls -->
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-navy-900 border border-navy-800 p-4 rounded-xl shadow-md">
+				<div class="flex items-center gap-2">
+					<button aria-label="Previous Slide" onclick="prevSlide()" class="w-10 h-10 rounded-lg bg-navy-800 hover:bg-navy-700 text-white flex items-center justify-center transition border border-navy-800 active:scale-95">
+						<i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+					<span class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest px-2" data-i18n="nav_flow">Presentation Flow</span>
+					<button aria-label="Next Slide" onclick="nextSlide()" class="w-10 h-10 rounded-lg bg-navy-800 hover:bg-navy-700 text-white flex items-center justify-center transition border border-navy-800 active:scale-95">
+						<i class="fa-solid fa-chevron-right text-xs"></i>
+					</button>
+				</div>
+
+				<div class="flex items-center gap-2 w-full sm:w-auto">
+					<select id="slide-jump-menu" aria-label="Slide Selector" onchange="jumpToSlide(this.value)" class="flex-grow sm:flex-none bg-navy-950 border border-navy-800 text-slate-200 text-xs rounded-lg px-3 py-2.5 outline-none focus:border-gold-500 font-bold">
+						<!-- Loaded dynamically -->
+					</select>
+				</div>
+			</div>
+		</section>
+
+
+		<!-- VIEW 2: STUDY GUIDES SECTION (CHARTS REMOVED) -->
+		<section aria-label="Study Guides Section" id="view-metrics-section" class="hidden space-y-6 w-full">
+			<div class="bg-navy-900 border border-navy-800 rounded-2xl p-6 md:p-8 shadow-xl space-y-6 max-w-4xl mx-auto">
+				<div>
+					<h2 class="text-xl font-bold font-serif text-white flex items-center gap-2">
+						<i class="fa-solid fa-graduation-cap text-gold-500"></i>
+						<span data-i18n="guides_tab_title">Self-Study Guide</span>
+					</h2>
+					<p class="text-xs text-slate-400 mt-1" data-i18n="guides_tab_subtitle">Review integrated coaching models and standard execution guidelines</p>
+				</div>
+
+				<!-- Focused study panel -->
+				<div class="bg-navy-950 p-6 md:p-8 rounded-xl border border-navy-800 space-y-4 shadow-inner">
+					<h3 class="text-xs uppercase font-extrabold tracking-widest text-gold-400 border-b border-navy-800 pb-2">
+						<i class="fa-solid fa-book-open mr-2"></i>
+						<span data-i18n="self_study_title">Study Guidelines</span>
+					</h3>
+					<div class="space-y-4 text-xs md:text-sm text-slate-300 leading-relaxed font-semibold">
+						<p data-i18n="self_study_p1">
+							To maximize performance benefits from this self-study curriculum, focus on the scripts provided on slides 10 through 13.
+						</p>
+						<p data-i18n="self_study_p2">
+							Record your own verbal delivery of each script using a smartphone recorder. Play back your voice and audit the register: you must sound flat, calm, and deliberate. If you sound defensive or high-pitched, you weaken the operational line.
+						</p>
+						<div class="p-5 bg-navy-900 border border-navy-800 rounded-lg space-y-3 mt-4">
+							<h4 class="text-xs font-bold text-white uppercase flex items-center gap-1.5" data-i18n="integrated_frameworks_title">
+								<i class="fa-solid fa-bookmark text-gold-500"></i>Integrated Core Frameworks
+							</h4>
+							<p class="text-xxs text-slate-400 leading-relaxed font-medium">
+								This curriculum synthesizes key methodologies from our primary text references to correct behavioral gaps and ensure operational discipline.
+							</p>
+							<ul class="space-y-2 text-slate-400 list-none text-xs">
+								<li class="flex items-start gap-2">
+									<span class="text-gold-400 font-bold">&#8226;</span>
+									<span><strong class="text-slate-200">Crucial Accountability (Patterson et al.):</strong> Identify gap facts, state operational impacts, and diagnose motivation vs ability barriers.</span>
+								</li>
+								<li class="flex items-start gap-2">
+									<span class="text-gold-400 font-bold">&#8226;</span>
+									<span><strong class="text-slate-200">Get to the Point! (Joel Schwartzberg):</strong> Construct strong position statements, reject tangent excuses, and deliver with composure.</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<!-- INTEGRATED BOOK CHAPTER REFERENCE MODULE -->
+				<div class="bg-navy-950 p-6 rounded-xl border border-navy-800 space-y-6">
+					<div class="border-b border-navy-800 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+						<div>
+							<h3 class="text-xs uppercase font-extrabold tracking-widest text-gold-400 flex items-center gap-2">
+								<i class="fa-solid fa-book-bookmark"></i>
+								<span data-i18n="books_summary_title">Book Chapters & Action Steps</span>
+							</h3>
+							<p class="text-xxs text-slate-400" data-i18n="books_summary_subtitle">Comprehensive actionable breakdowns synthesized from your uploaded literature</p>
+						</div>
+
+						<!-- Minimal Book Selector Tabs -->
+						<div class="flex bg-navy-900 border border-navy-800 p-1 rounded-xl gap-1">
+							<button onclick="switchBookGuide('crucial')" id="btn-book-crucial" class="px-3 py-1.5 text-[10px] font-bold rounded-lg transition bg-gold-500 text-navy-950">
+								Crucial Accountability
+							</button>
+							<button onclick="switchBookGuide('point')" id="btn-book-point" class="px-3 py-1.5 text-[10px] font-bold rounded-lg transition text-slate-300 hover:text-white">
+								Get to the Point!
+							</button>
+						</div>
+					</div>
+
+					<!-- Dynamic Chapter Cards -->
+					<div id="book-guide-container" class="space-y-4">
+						<!-- Loaded dynamically based on active book and language -->
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<!-- VIEW 3: INTERACTIVE CHOICE TEMPLATE SIMULATOR -->
+		<section aria-label="Decision Simulator Section" id="view-sim-section" class="hidden space-y-4 w-full">
+			<div class="bg-navy-900 border border-navy-800 rounded-2xl p-6 md:p-8 shadow-xl space-y-6">
+				<div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-navy-800 pb-4 gap-4">
+					<div>
+						<h2 class="text-xl font-bold font-serif text-white flex items-center gap-2">
+							<i class="fa-solid fa-scale-balanced text-gold-500 text-md"></i>
+							<span data-i18n="sim_title">Decision Simulator</span>
+						</h2>
+						<p class="text-xs text-slate-400 mt-1" data-i18n="sim_subtitle">Evaluate strategic approaches to retail banking standard deviations</p>
+                    </div>
+                    
+                    <!-- Dynamic Metrics -->
+                    <div class="flex gap-4">
+                        <div class="bg-navy-950 px-4 py-2 rounded-xl border border-navy-800 text-center min-w-[100px]">
+                            <span class="text-[9px] uppercase font-extrabold text-slate-400 block" data-i18n="sim_score_control">Operational Control</span>
+                            <span id="score-control" class="text-sm font-bold text-teal-400">80%</span>
+                        </div>
+                        <div class="bg-navy-950 px-4 py-2 rounded-xl border border-navy-800 text-center min-w-[100px]">
+                            <span class="text-[9px] uppercase font-extrabold text-slate-400 block" data-i18n="sim_score_trust">Team Trust</span>
+                            <span id="score-trust" class="text-sm font-bold text-gold-400">80%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Scenario -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    <div class="lg:col-span-5 space-y-4 bg-navy-950 p-5 rounded-xl border border-navy-800 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <span class="text-[9px] uppercase tracking-widest font-extrabold text-teal-400" data-i18n="sim_active_scen">Active Scenario Case</span>
+                            <h3 id="sim-case-title" class="text-base font-bold font-serif text-white">Case Title</h3>
+                            <p id="sim-case-desc" class="text-xs text-slate-400 leading-relaxed">Case Description</p>
+                        </div>
+
+                        <div class="p-3 bg-navy-900 border border-navy-800 rounded-lg space-y-1">
+                            <span class="text-[8px] font-extrabold text-red-400 uppercase tracking-wider" data-i18n="sim_pushback">Employee Pushback:</span>
+                            <p id="sim-case-objection" class="text-xs text-slate-300 italic font-medium">Objection text</p>
+                        </div>
+                    </div>
+
+                    <!-- Choices and evaluation feedback -->
+                    <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <span class="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 block mb-1" data-i18n="sim_select_choice">Select Your Correction Response:</span>
+
+                            <button onclick="evaluateChoice('A')" class="w-full p-3.5 bg-navy-900 hover:bg-navy-800 text-left border border-navy-800 hover:border-gold-500/30 rounded-xl transition flex gap-3 text-xs md:text-sm font-medium">
+                                <span class="w-5 h-5 bg-navy-950 rounded-full flex items-center justify-center text-xs text-gold-400 font-bold">A</span>
+                                <span id="opt-text-a">Option A</span>
+                            </button>
+
+                            <button onclick="evaluateChoice('B')" class="w-full p-3.5 bg-navy-900 hover:bg-navy-800 text-left border border-navy-800 hover:border-gold-500/30 rounded-xl transition flex gap-3 text-xs md:text-sm font-medium">
+                                <span class="w-5 h-5 bg-navy-950 rounded-full flex items-center justify-center text-xs text-gold-400 font-bold">B</span>
+                                <span id="opt-text-b">Option B</span>
+                            </button>
+
+                            <button onclick="evaluateChoice('C')" class="w-full p-3.5 bg-navy-900 hover:bg-navy-800 text-left border border-navy-800 hover:border-gold-500/30 rounded-xl transition flex gap-3 text-xs md:text-sm font-medium">
+                                <span class="w-5 h-5 bg-navy-950 rounded-full flex items-center justify-center text-xs text-gold-400 font-bold">C</span>
+                                <span id="opt-text-c">Option C</span>
+                            </button>
+                        </div>
+
+                        <!-- Single Minimal Feedback Card -->
+                        <div id="sim-feedback-box" class="hidden p-4 bg-navy-950 border border-gold-500/20 rounded-xl">
+                            <span class="text-[9px] uppercase tracking-wider text-gold-400 font-bold block" data-i18n="sim_outcome_eval">Approach Evaluation</span>
+                            <p id="sim-feedback-text" class="text-xs text-slate-300 mt-1 leading-relaxed">Feedback content.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario Selection Tabs -->
+                <div class="flex justify-end gap-2 border-t border-navy-800/60 pt-4">
+                    <button onclick="switchSimScenarioLevel(1)" id="sim-nav-1" class="w-8 h-8 rounded-lg text-xs font-bold bg-gold-500 text-navy-950 shadow">1</button>
+                    <button onclick="switchSimScenarioLevel(2)" id="sim-nav-2" class="w-8 h-8 rounded-lg text-xs font-bold bg-navy-850 hover:bg-navy-800 text-slate-300">2</button>
+                    <button onclick="switchSimScenarioLevel(3)" id="sim-nav-3" class="w-8 h-8 rounded-lg text-xs font-bold bg-navy-850 hover:bg-navy-800 text-slate-300">3</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- VIEW 4: SIMPLIFIED SCRIPT PLANNER -->
+        <section aria-label="Script Planner Section" id="view-planner-section" class="hidden space-y-4 w-full font-sans">
+            <div class="bg-navy-900 border border-navy-800 rounded-2xl p-6 md:p-8 shadow-xl space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold font-serif text-white" data-i18n="plan_title">Point-Driven Verbal Planner</h2>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="plan_subtitle">Formulate and save standardized verbal directives using local storage synchronization</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    <!-- Config Fields -->
+                    <div class="lg:col-span-5 bg-navy-950 p-5 rounded-xl border border-navy-800 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <span class="text-[9px] uppercase font-extrabold text-teal-400 tracking-wider block" data-i18n="plan_variables">Plan Variables</span>
+
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold uppercase text-slate-400 tracking-wider">Employee Name:</label>
+                                <input id="plan-name-input" type="text" placeholder="e.g. Sarah" class="w-full bg-navy-900 border border-navy-800 rounded-lg px-3 py-2 text-xs text-white focus:border-gold-500 outline-none font-semibold">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold uppercase text-slate-400 tracking-wider">Observable Fact Gap:</label>
+                                <input id="plan-gap-input" type="text" placeholder="e.g. you walked in at 8:43 AM" class="w-full bg-navy-900 border border-navy-800 rounded-lg px-3 py-2 text-xs text-white focus:border-gold-500 outline-none font-semibold">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold uppercase text-slate-400 tracking-wider">Operational Business Impact:</label>
+                                <input id="plan-impact-input" type="text" placeholder="e.g. huddles start late and client lines increase" class="w-full bg-navy-900 border border-navy-800 rounded-lg px-3 py-2 text-xs text-white focus:border-gold-500 outline-none font-semibold">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold uppercase text-slate-400 tracking-wider">Reset Standard Directive:</label>
+                                <input id="plan-reset-input" type="text" placeholder="e.g. be fully ready by 8:38 AM sharp" class="w-full bg-navy-900 border border-navy-800 rounded-lg px-3 py-2 text-xs text-white focus:border-gold-500 outline-none font-semibold">
+                            </div>
+                        </div>
+
+                        <button onclick="compileDirectPlan()" class="w-full py-3 bg-gold-500 hover:bg-gold-600 text-navy-950 font-extrabold rounded-lg text-xs transition uppercase tracking-widest shadow">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Compile Script
+                        </button>
+                    </div>
+
+                    <!-- Clean Render Terminal -->
+                    <div class="lg:col-span-7 flex flex-col justify-between bg-navy-950 border border-navy-800 rounded-xl p-5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 px-3 py-1 bg-gold-500 text-navy-950 text-[8px] font-extrabold uppercase tracking-widest rounded-bl-lg">Script Output</div>
+
+                        <div class="space-y-3 my-4">
+                            <h3 class="text-[9px] uppercase tracking-widest text-slate-400 font-extrabold">Formulated Directive</h3>
+                            <div id="plan-terminal-output" class="bg-navy-900 border border-navy-800 p-5 rounded-lg min-h-[160px] flex items-center justify-center text-center">
+                                <span class="text-xs text-slate-500 italic">Fill in variables to render your leadership directive card.</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-navy-800">
+                            <button onclick="copyPlannedScript()" class="py-2.5 bg-navy-850 hover:bg-navy-800 text-xs font-bold rounded-lg text-slate-300 border border-navy-800 transition">
+                                <i class="fa-regular fa-copy mr-1.5"></i>Copy Script
+                            </button>
+                            <button onclick="resetPlanner()" class="py-2.5 bg-navy-850 hover:bg-navy-800 text-xs font-bold rounded-lg text-red-400 border border-navy-800 transition">
+                                <i class="fa-solid fa-rotate-left mr-1.5"></i>Clear Cache
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+	</main>
+
+	<!-- Simple Corporate Footer -->
+	<footer class="bg-navy-900 border-t border-navy-800 py-4 text-center text-[10px] text-slate-500">
+		<div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+			<p>Branch Leadership Academy &bull; Formation au leadership</p>
+			<p class="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Standard Sync Active &bull; LocalStorage Persist</p>
+		</div>
+	</footer>
+
+	<!-- Interactive Data Engine -->
+	<script>
+		// TRANSLATED BILINGUAL DICTIONARIES
+		const i18n = {
+			en: {
+				lang_code: "FR",
+				menu_deck: "Slide Deck",
+				menu_metrics: "Study Guide",
+				menu_sim: "Simulator",
+				menu_planner: "Planner",
+				app_title: "Speaking Like a Leader",
+				app_subtitle: "Holding the Line • Self-Study Leadership Dashboard",
+				academy_watermark: "Apex Banking Leadership Academy",
+				swipe_help: "Use arrow keys or swipe to navigate",
+				theme_text: "Holding the Line",
+				nav_flow: "Presentation Flow",
+				study_narration_header: "Narrative Study Script",
+				guides_tab_title: "Self-Study Guide",
+				guides_tab_subtitle: "Review integrated coaching models and standard execution guidelines",
+				self_study_title: "STUDY GUIDELINES",
+				self_study_p1: "To maximize performance benefits from this self-study curriculum, focus on the scripts provided on slides 10 through 13.",
+				self_study_p2: "Record your own verbal delivery of each script using a smartphone recorder. Play back your voice and audit the register: you must sound flat, calm, and deliberate. If you sound defensive or high-pitched, you weaken the operational line.",
+				integrated_frameworks_title: "INTEGRATED CORE FRAMEWORKS",
+				books_summary_title: "Book Chapters & Action Steps",
+				books_summary_subtitle: "Comprehensive actionable breakdowns synthesized from your uploaded literature",
+				sim_title: "Decision Simulator",
+				sim_subtitle: "Evaluate strategic approaches to retail banking standard deviations",
+				sim_score_control: "Operational Control",
+				sim_score_trust: "Team Trust",
+				sim_active_scen: "Active Scenario Case",
+				sim_pushback: "Employee Pushback:",
+				sim_select_choice: "Select Your Correction Response:",
+				sim_outcome_eval: "Approach Evaluation",
+				plan_title: "Point-Driven Verbal Planner",
+				plan_subtitle: "Formulate and save standardized verbal directives using local storage synchronization",
+				plan_variables: "Plan Variables"
+			},
+			fr: {
+				lang_code: "EN",
+				menu_deck: "Diaporamas",
+				menu_metrics: "Guide d'étude",
+				menu_sim: "Simulateur",
+				menu_planner: "Planificateur",
+				app_title: "Parler en Leader",
+				app_subtitle: "Maintenir la ligne de conduite • Module d'auto-apprentissage",
+				academy_watermark: "Académie de leadership bancaire Apex",
+				swipe_help: "Utilisez les touches fléchées ou glissez pour naviguer",
+				theme_text: "Maintenir la ligne de conduite",
+				nav_flow: "Présentation",
+				study_narration_header: "Script d'étude narratif",
+				guides_tab_title: "Guide d'auto-apprentissage",
+				guides_tab_subtitle: "Analysez les modèles de coaching intégrés et les directives d'exécution",
+				self_study_title: "DIRECTIVES D'APPRENTISSAGE",
+				self_study_p1: "Pour maximiser l'impact de ce parcours d'auto-apprentissage, concentrez-vous sur les scripts de recadrage des diapositives 10 à 13.",
+				self_study_p2: "Enregistrez votre propre voix sur smartphone. À la réécoute, vérifiez votre intonation : elle doit être neutre, calme et posée. Un ton défensif ou aigu affaiblit immédiatement l'autorité du standard.",
+				integrated_frameworks_title: "MODÈLES D'ANALYSE INTÉGRÉS",
+				books_summary_title: "Chapitres de livres & actions concrètes",
+				books_summary_subtitle: "Détails exploitables issus de vos ouvrages de référence",
+				sim_title: "Decision Simulator",
+				sim_subtitle: "Évaluez les approches managériales face aux écarts de standards bancaires",
+				sim_score_control: "Contrôle Opérationnel",
+				sim_score_trust: "Confiance de l'Équipe",
+				sim_active_scen: "Scénario Actif",
+				sim_pushback: "Réponse de l'employé (L'objection) :",
+				sim_select_choice: "Sélectionnez votre réponse managériale :",
+				sim_outcome_eval: "Évaluation de l'approche",
+				plan_title: "Planificateur verbal d'impact",
+				plan_subtitle: "Formulez et enregistrez des directives claires stockées localement",
+				plan_variables: "Variables du plan"
+			}
+		};
+
+		// BILINGUAL BOOK SUMMARIES DATABASE (Synthesized from uploaded PDFs)
+		const bookSummaries = {
+			crucial: {
+				en: [
+					{ ch: "Chapter 1", title: "Choose What and If", point: "Decide whether the issue is Content (first deviation), Pattern (recurring issues), or Relationship (trust break).", steps: ["Analyze if expectations were vague or unagreed.", "Use the CPR model to select the core problem.", "Avoid dumping multiple frustrations at once."], outcomes: ["Clear entry focus for the coaching discussion."] },
+					{ ch: "Chapter 2", title: "Master My Stories", point: "Eliminate biased 'Villain/Victim' stories. Re-establish emotional safety before initiating contact.", steps: ["Differentiate raw observable facts from mental stories.", "Ask: 'Why would a reasonable person act this way?'", "Prepare with calm curiosity and objective metrics."], outcomes: ["Constructive, non-defensive managerial mindset."] },
+					{ ch: "Chapter 3", title: "Describe the Gap", point: "State fact-based deviations securely without raising alarm triggers or triggering defense.", steps: ["Compare expected agreements vs actual observed actions.", "Describe the brief team or client impact.", "Pause and close with the question: 'What happened?'"], outcomes: ["High trust safety during critical alignment checks."] },
+					{ ch: "Chapter 4", title: "Make It Motivating", point: "Enforce standards without relying on power commands, coercion, or empty sales slogans.", steps: ["Explicitly link metrics to natural consequences.", "Clarify impacts on coworkers, risks, and clients.", "Avoid transactional threat patterns."], outcomes: ["Sustained internal alignment and team respect."] },
+					{ ch: "Chapter 5", title: "Make It Easy", point: "Identify, isolate, and remove operational capability and process bottlenecks immediately.", steps: ["Evaluate tool, environment, or system capability gaps.", "Involve the employee in active problem-solving.", "Ask: 'What is blocking your performance?'"], outcomes: ["Fluid execution by removing downstream barriers."] },
+					{ ch: "Chapter 6", title: "Stay Focused & Flexible", point: "Keep the coaching on-point when employees try to deflect with new issues or side excuses.", steps: ["Acknowledge new issues or objections calmly.", "Formally park the tangent and schedule a follow-up.", "Bring the conversation back to the original standard."], outcomes: ["Control is preserved without hijacking."] },
+					{ ch: "Chapter 7", title: "Agree on a Plan & Follow Up", point: "Lock down every alignment meeting with structured commitments and designated metrics.", steps: ["Determine who does what, by when, and how.", "Designate clear tracking parameters and next checks.", "Never accept vague promises like 'I will try to...'"], outcomes: ["Documented accountability and systematic follow-through."] },
+					{ ch: "Chapter 8", title: "Put It All Together", point: "Apply the full method to larger, messier, more complicated problems where multiple causes are present.", steps: ["Define the complex issue factually.", "Examine assumptions and narrative biases.", "Conduct the alignment dialogue safely and diagnose constraints."], outcomes: ["Clear structural alignment on high-stakes recurring issues."] },
+					{ ch: "Chapter 9", title: "The 12 'Yeah-Buts'", point: "Anticipate excuses and objections and prepare a highly disciplined response rather than avoidance.", steps: ["Anticipate common roadblocks (conflict fear, power differences).", "Keep the standard unbending while acknowledging friction.", "Map specific objections with prepared coaching templates."], outcomes: ["Unbending resilience under conversational pushback."] }
+				],
+				fr: [
+					{ ch: "Chapitre 1", title: "Choisir le Quoi et le Si", point: "Distinguer le Contenu (premier écart), la Répétition (habitudes) et la Relation (perte de confiance).", steps: ["Vérifier si les attentes ont été clairement formulées.", "Utiliser le modèle CPR pour isoler le problème central.", "Éviter d'accumuler les reproches passés."], outcomes: ["Concentration absolue sur le problème le plus important."] },
+					{ ch: "Chapitre 2", title: "Maîtriser mes Histoires", point: "Éliminer les jugements biaisés et de victime avant d'initier la discussion de recadrage.", steps: ["S'en tenir strictement aux faits réels et observables.", "Se demander: 'Pourquoi une personne raisonnable agirait ainsi?'", "Adopter un ton neutre et dénué de colère."], outcomes: ["Climat de confiance préservé et posture sereine."] },
+					{ ch: "Chapitre 3", title: "Décrire l'Écart", point: "Décrire la dérive factuelle de manière sécurisante sans braquer le collaborateur.", steps: ["Comparer l'attente partagée avec l'action observée.", "Décrire l'impact sur l'équipe ou le client.", "Terminer en écoutant: 'Que s'est-il passé?'"], outcomes: ["Maintien de la sécurité relationnelle durant l'échange."] },
+					{ ch: "Chapitre 4", title: "Rendre le Standard Motivant", point: "Faire respecter les standards sans recourir à la menace, à la force ou à des slogans creux.", steps: ["Associer le respect du standard à des conséquences concrètes.", "Montrer l'impact sur les collègues, le client et les risques.", "Éviter l'abus d'autorité inutile."], outcomes: ["Alignement volontaire et respect managérial durable."] },
+					{ ch: "Chapitre 5", title: "Rendre l'Exécution Facile", point: "Identifier, isoler et corriger immédiatement les obstacles de compétence ou de processus.", steps: ["Analyser les lacunes d'outils, d'environnement ou de méthode.", "Associer le collaborateur à la recherche de solutions.", "Demander: 'Qu'est-ce qui freine votre exécution?'"], outcomes: ["Rétablissement fluide en éliminant les barrières."] },
+					{ ch: "Chapitre 6", title: "Rester Concentré et Flexible", point: "Garder le fil de l'entretien lorsque l'employé dévie vers d'autres sujets ou excuses.", steps: ["Prendre note calmement du nouveau point soulevé.", "Reporter la discussion de ce point secondaire à plus tard.", "Ramener l'employé au standard d'origine non respecté."], outcomes: ["Maintien de la direction opérationnelle de l'échange."] },
+					{ ch: "Chapitre 7", title: "Valider le Plan d'Action", point: "Verrouiller chaque entretien de recadrage par des engagements et des échéances clairs.", steps: ["Déterminer qui fait quoi, pour quand et comment.", "Planifier des points de contrôle d'avancement.", "Ne jamais accepter de vagues promesses 'Je vais essayer'."], outcomes: ["Suivi structuré et résultats mesurables."] },
+					{ ch: "Chapitre 8", title: "Tout Mettre En Place", point: "Appliquer la méthode globale aux cas complexes, récurrents et multi-factoriels.", steps: ["Définir le cas complexe factuellement sans biais.", "Analyser les zones de résistance et d'attentes non dites.", "Bâtir un plan de contrôle partagé avec échéances fermes."], outcomes: ["Résolution durable des dérives de performance ancrées."] },
+					{ ch: "Chapitre 9", title: "Les 12 'Yeah-Buts'", point: "Anticiper les excuses récurrentes et y opposer une réponse calme sans esquive ni colère.", steps: ["Lister les parades classiques de l'équipe face aux contraintes.", "Garder le standard inflexible tout en validant la friction.", "Déployer des réponses types préparées sans improviser."], outcomes: ["Contrôle total du dialogue face à la mauvaise foi."] }
+				]
+			},
+			point: {
+				en: [
+					{ ch: "Intro", title: "The First Step", point: "Effective speech starts with knowing your specific contention, not just talking about a topic.", steps: ["Identify what you want the audience to think, feel, or do.", "Strip the message down to its core sentence.", "Remove filler preamble before speaking or writing."], outcomes: ["Shorter, clearer, and more actionable directives."] },
+					{ ch: "Chapter 1", title: "The Big Flaw", point: "Communication fails when leaders share broad, vague topics instead of holding a position.", steps: ["Audit your directives for topic-sharing patterns.", "Convert passive themes into active, testable claims.", "Ensure your statements are arguable and position-driven."], outcomes: ["Elimination of rambling; instant presence on the floor."] },
+					{ ch: "Chapter 2", title: "Know Your Point", point: "A real point is specific, arguable, and useful to the audience.", steps: ["Draft your statement using the phrase 'I believe that...'.", "Delete the training words ('I believe that') to leave a strong point.", "Ensure the point is specific, arguable, and valuable."], outcomes: ["Authority, structure, and direction in your commands."] },
+					{ ch: "Chapter 3", title: "Sell Your Point", point: "Construct all auxiliary arguments around your point and ruthlessly discard unrelated context.", steps: ["Focus entirely on supporting evidence for your point.", "Avoid adding interesting but non-supportive background.", "Structure arguments logically to lead directly to your outcome."], outcomes: ["Concentrated, powerful delivery that commands attention."] },
+					{ ch: "Chapter 4", title: "Stick to Your Point", point: "Maintain control of the discussion and avoid drifting under pressure or employee deflection.", steps: ["Recognize when excuses or side issues lead you off-point.", "Politely acknowledge deflections and steer back.", "Repeat your central contention until alignment is reached."], outcomes: ["Unbending adherence to standards; high executive command."] },
+					{ ch: "Chapter 5", title: "Point-Driven Delivery", point: "Physical posture, pace, and vocal register must match the authority of your point.", steps: ["Lower your vocal register to communicate composure.", "Speak with measured, deliberate pauses.", "Maintain steady, confident, and direct eye contact."], outcomes: ["Commanding executive presence and natural operational authority."] }
+				],
+				fr: [
+					{ ch: "Intro", title: "La Première Étape", point: "Toute communication d'impact commence par une affirmation claire, pas par un simple sujet.", steps: ["Définir ce que l'interlocuteur doit penser ou faire.", "Simplifier le message jusqu'à une seule idée maîtresse.", "Supprimer les excuses de politesse avant d'entrer en matière."], outcomes: ["Directives courtes, impactantes et mémorisables."] },
+					{ ch: "Chapitre 1", title: "La Grande Erreur", point: "La communication échoue lorsque le leader survole un thème général sans prendre position.", steps: ["Identifier les moments où vous partagez de vagues thèmes.", "Remplacer les sujets vagues par des exigences concrètes.", "S'assurer que vos déclarations expriment une posture managériale."], outcomes: ["Éradication du babil; directivité instantanée."] },
+					{ ch: "Chapitre 2", title: "Connaître son Point", point: "Un vrai point passe le test du 'Je crois que' et se construit avec un verbe d'action.", steps: ["Rédiger la directive en commençant par 'Je crois que...'.", "Supprimer les mots d'introduction pour ne garder que la position.", "Valider le fait que le point est spécifique et utile."], outcomes: ["Autorité renforcée et directivité assumée."] },
+					{ ch: "Chapitre 3", title: "Vendre sa Position", point: "Organiser tous ses arguments autour de sa position et éliminer le contexte inutile.", steps: ["Se concentrer uniquement sur les faits étayant votre position.", "Éliminer les détails superflus ou les digressions.", "Guider logiquement l'interlocuteur vers la conclusion attendue."], outcomes: ["Présentation resserrée et impactante qui capte l'attention."] },
+					{ ch: "Chapitre 4", title: "Tenir sa Ligne", point: "Conserver le contrôle de la conversation face aux objections en temps réel.", steps: ["Détecter les dérives causées par les excuses ou digressions.", "Recentrer poliment l'échange sur le standard d'origine.", "Répéter l'exigence centrale jusqu'à obtention de l'engagement."], outcomes: ["Respect strict des standards; maîtrise managériale."] },
+					{ ch: "Chapitre 5", title: "La Voix et la Posture", point: "La posture physique, le débit et le timbre doivent amplifier votre autorité.", steps: ["Médiatiser une voix posée et basse pour inspirer le calme.", "Ménager des silences délibérés.", "Garder un contact visuel direct et confiant."], outcomes: ["Présence exécutive affirmée et respect opérationnel de l'équipe."] }
+				]
+			}
+		};
+
+		// BILINGUAL TRANSLATED SLIDES DATABASE
+		const slideTranslations = {
+			en: [{
+					title: "Speaking Like a Leader, Holding the Line",
+					bullets: [
+						"Establishing operational authority in your branch alone",
+						"Transitioning from banker to solo standard-setter",
+						"Mastering calm, point-driven communication",
+						"Balancing professional respect with absolute discipline"
+					],
+					layout: "title",
+					notes: "Facilitator welcome. Introduce yourself in a calm, controlled manner. State clearly that today is not a motivational session; it is a highly structural, practical leadership onboarding program. Set the tone right now: calm, direct, and unyielding on standard compliance.",
+					audio: "Welcome to solo branch command. Today marks the end of your transition from a Personal Banker or Assistant Manager to the final decision-maker in the building. Running a location alone means you can no longer rely on personal effort to win. You win when your team executes to standard. This program is your blueprint to speak like a leader, address performance gaps instantly, and establish command.",
+				},
+				{
+					title: "Why this class matters",
+					bullets: [
+						"Promotion fundamentally changes your job role",
+						"High performers win through personal effort",
+						"Leaders win through standards and coaching",
+						"Avoided conversations quickly become branch culture"
+					],
+					layout: "standard",
+					notes: "Pause for three seconds after reading bullet 4. Ask the learner: 'Can you remember a branch where a manager ignored tardiness or transaction bypasses? What happened to the rest of the team?' Keep the discussion focused strictly on performance outcomes.",
+					audio: "Let’s address the reality of your new role: promotion changes everything. In retail banking, the culture of your branch is defined entirely by the lowest behavior you, as the manager, choose to tolerate. If you ignore a deviation, you've established a lower standard.",
+				},
+				{
+					title: "The role shift",
+					bullets: [
+						"From individual producer to standard-setter",
+						"From helper/supportive coworker to decision-maker",
+						"From being liked to being trusted",
+						"From over-explaining to point-driven communication"
+					],
+					layout: "standard",
+					notes: "Popularity is temporary; operational trust is built on consistency and structural fairness. Highlight that talking too much or defending decisions lowers executive credibility.",
+					audio: "The biggest mistake new managers make is trying to remain 'one of the team' while holding the title of boss. You cannot have it both ways. You must shift your focus from being liked to being trusted. Earning trust requires consistency and transparency.",
+				},
+				{
+					title: "What leadership speech sounds like",
+					bullets: [
+						"Clear: Free of filler words and hedging",
+						"Brief: Stripped of unnecessary justifications",
+						"Outcome-driven: Focus entirely on the standard and next steps",
+						"Calm: Delivered with consistent, even tone"
+					],
+					layout: "standard",
+					notes: "Model this behavior now. Speak slower, lower your pitch slightly, and do not use nervous hand gestures. Show the learner how a brief sentence followed by silence commands the room.",
+					audio: "Leadership speech is an active tool designed to get things done, remove ambiguity, and maintain operational control. Apologetic speech is defensive and circular. Leadership speech is clear, brief, and outcome-driven.",
+				},
+				{
+					title: "Weak talk vs leader talk",
+					layout: "comparison",
+					rows: [
+						["I just wanted to mention…", "I want to be clear about the expectation…"],
+						["Maybe next time…", "Going forward, the standard is…"],
+						["I know you’re probably busy but…", "This needs your attention now."],
+						["Can you try to…", "I need you to…"],
+						["I don’t want to be mean…", "I want to address this directly and respectfully."]
+					],
+					notes: "Have the learner read the 'Weak talk' phrases, and then immediately read the 'Leader talk' replacements. Force them to notice how their physical posture and vocal presence change during each translation.",
+					audio: "Look at the weak talk column. Phrases like 'I just wanted to mention' are apologetic cushions. They signal to your team that your directives are optional. Leader talk, however, establishes absolute clarity and boundaries.",
+				},
+				{
+					title: "The point-driven message",
+					bullets: [
+						"State your point directly",
+						"State the expected standard",
+						"State the operational reason briefly",
+						"State the next step"
+					],
+					example: "“Our huddle begins at 8:40 sharp. I need you in place and ready by 8:38. Running on time allows us to secure our vault, assign lobby roles, and open the doors for our clients precisely at 9:00. Let's make sure we are aligned on this tomorrow.”",
+					layout: "example",
+					notes: "Deconstruct the huddle script on the slide. Show the learner where the point ends, where the expectation begins, why the business reason is vital, and how the next step locks in execution.",
+					audio: "To ensure your directives land with authority, we use a repeatable, four-part point-driven structure: state the point, define the expectation, explain the brief operational reason, and lock down the next step. Read the huddle example on your slide.",
+				},
+				{
+					title: "Why new managers avoid accountability",
+					bullets: [
+						"They want to stay liked (popularity trap)",
+						"They fear emotional or defensive employee reactions",
+						"They hope the issue fixes itself",
+						"They wait until they are highly frustrated"
+					],
+					layout: "standard",
+					notes: "Address the psychology of avoidance. Explain that early accountability is the kindest, most professional thing a manager can do to keep their team out of trouble and running smoothly.",
+                    audio: "We avoid accountability because confrontation feels uncomfortable. So, we stay silent and hope the issue corrects itself. But performance leaks never fix themselves; they compound. If you don't address a performance deviation early, frustration builds.",
+				},
+				{
+					title: "The accountability model",
+					bullets: [
+						"Name the gap (Expectation vs. Reality)",
+						"Use facts, not emotional labels",
+						"Explain the operational and client impact",
+						"Ask and listen, reset the standard, and confirm commitment"
+					],
+					layout: "diagram",
+					notes: "Demonstrate that 'Ask and Listen' is not about accepting excuses; it is a critical diagnostic step to determine if the standard was bypassed due to a capability issue or a motivational issue.",
+					audio: "This is your main accountability tool. When a standard is bypassed, do not judge character or intent; name the gap. State the facts, outline the operational impact, listen to diagnose if this is an ability or motivation barrier, and reset the standard.",
+				},
+				{
+					title: "Banking behaviors that require quick correction",
+					bullets: [
+						"Late huddles & tardiness for scheduled slots",
+						"Unattended lobby floor or teller line",
+						"Weak or non-existent client lobby engagement",
+						"Public pushback or procedural compliance deviations"
+					],
+					layout: "standard",
+					notes: "Have the learner analyze these five behaviors. These are the primary operational leaks that disrupt customer experience, increase risk metrics, and trigger audit failures.",
+					audio: "In a retail bank, operational discipline is tied directly to customer experience and risk mitigation. There are five specific behaviors you must correct immediately: lateness, leaving the floor unattended, ignoring clients, public pushback, and procedural deviations.",
+				},
+				{
+					title: "Script example: huddle lateness",
+					bullets: [
+						"State the fact: 'Our huddle starts at 8:40, today you arrived after we started.'",
+						"State expectation: 'I need you ready before the huddle begins.'",
+						"State impact: 'Starting on time sets our coordination and client readiness.'",
+						"Secure commitment: 'Starting tomorrow, be ready by 8:38. Can you commit to that?'"
+					],
+					layout: "script",
+					notes: "Read this script with an even, neutral tone. Do not sound sarcastic or angry. Show the learner how a steady voice increases the authority of the statement.",
+					audio: "Let’s look at a real-time correction for an employee arriving late to the huddle. Note the structure: 'Our huddle begins at 8:40, and today you arrived after we started.' That is the gap—an indisputable fact. No accusations, no lectures.",
+				},
+				{
+					title: "Script example: uncovered floor",
+					bullets: [
+						"State the fact: 'You left the teller line without notifying anyone, leaving the floor uncovered.'",
+						"State impact: 'That puts pressure on the team and increases client wait times.'",
+						"State expectation: 'Before stepping away, notify me or your coverage partner every time.'",
+						"Ask/Listen: 'What happened today?'"
+					],
+					layout: "script",
+					notes: "Explain that the question 'What happened today?' is not an invite to accept poor habits; it is a professional diagnostic tool to ensure the team has the ability and support to succeed.",
+					audio: "Leaving the teller line unattended creates immediate risk and bottles up client wait times. Here is your script. Name the gap, state the impact on the rest of the team, reset the notification standard, and ask what happened today.",
+				},
+				{
+					title: "Script example: questioning direction",
+					bullets: [
+						"State the fact: 'You challenged the direction in front of the team instead of aligning first.'",
+						"State expectation: 'I welcome questions, but I need alignment in the moment.'",
+						"State boundary: 'If you disagree, bring it to my office professionally after execution.'",
+						"Verify alignment: 'Do you understand the distinction?'"
+					],
+					layout: "script",
+					notes: "Coach the learner that this conversation must always occur in a private office setting, never on the open branch floor in front of customers or other staff.",
+					audio: "Public pushback is a direct challenge to your authority. If an employee challenges a standard on the open floor, pull them into your office and deliver this script. You welcome professional questions, but you require alignment in front of the team.",
+				},
+				{
+					title: "Script example: procedure and risk",
+					bullets: [
+						"State the fact: 'You did not follow the required dual-control verification procedure.'",
+						"State impact: 'That creates unnecessary compliance risk for the branch and bank.'",
+						"State expectation: 'This security standard is not optional or situational.'",
+						"Diagnose & Reset: 'Walk me through your thinking, and we will reset the exact process.'"
+					],
+					layout: "script",
+					notes: "Emphasize that as a Branch Manager, they are the Chief Risk Officer of their location. Softness on audit controls is a compliance failure waiting to happen.",
+					audio: "In retail banking, procedural shortcuts can lead to immediate loss or termination. When you observe a compliance bypass, your tone must be absolute. State the gap, explain the risk, declare the standard as non-negotiable, and transition to a reset.",
+				},
+				{
+					title: "Daily branch leadership rhythm",
+					bullets: [
+						"08:35–08:40: Pre-huddle readiness check (systems logged in, tills ready)",
+						"08:40: Morning huddle starts sharp on the dot; assign roles",
+						"Mid-morning: Observe lobby greetings & manage active floor coverage",
+						"Midday: Confirm lunch wave transitions & run quick coaching touchpoints"
+					],
+					layout: "timeline",
+					notes: "Instruct the learner that if they are loose with huddle start times, the team will be loose with lunch schedules, floor coverage, and transaction audits. The manager sets the pace.",
+					audio: "To hold the line, you must implement a tight daily cadence. Your day starts at 8:35 with a readiness check. The huddle begins at 8:40 sharp—not when employees are still pouring coffee. Monitor the lobby, manage lunch waves, run coaching checks, and review wins.",
+				},
+				{
+					title: "What good looks like after this class",
+					bullets: [
+						"Immediate coaching: Correcting deviations calmly within 24 hours",
+						"Clean communication: Speaking with a point, avoiding hedging and fillers",
+						"Consistent standards: Morning huddles and lunch waves run exactly on time",
+						"Executive command: Leading with composure, confidence, and absolute control"
+					],
+					layout: "standard",
+					notes: "Summarize the primary benefits. Remind the learner that they now have the complete linguistic toolset and the structured process to run their branch effectively.",
+					audio: "Let's look at what success looks like when you apply these synthesized models. You correct behavioral gaps calmly within the same day. Your speech is point-driven and concise. Your branch operates like a Swiss watch because standards are non-negotiable.",
+				},
+				{
+					title: "Commitments",
+					bullets: [
+						"One tentative language habit you will stop using starting today",
+						"One branch operational standard you will reinforce tomorrow morning sharp",
+						"One standard accountability conversation you will execute within 24 hours"
+					],
+					layout: "contract",
+					notes: "Distribute Handouts 3 and 5. Have the learner physically write down their commitments on their handout. Confirm alignment and schedule a follow-up coaching meeting in one week.",
+					audio: "We do not end this master class with vague concepts. We end with concrete commitments. I want you to write down: one language habit you will stop using today, one standard you will reinforce tomorrow, and one accountability conversation you will have in the next 24 hours. Sign it.",
+				}
+			],
+			fr: [{
+					title: "Parler en leader, maintenir la ligne de conduite",
+					bullets: [
+						"Établir l'autorité opérationnelle en gérant seul la succursale",
+						"Transitionner du rôle de producteur à celui de garant des standards",
+						"Maîtriser une communication calme, concise et orientée résultats",
+						"Équilibrer respect professionnel et discipline opérationnelle absolue"
+					],
+					layout: "title",
+					notes: "Accueil du facilitateur. Présentez-vous d'une manière calme et posée. Affirmez clairement que cette séance n'est pas une réunion de motivation, mais un parcours d'onboarding managérial très structuré et pratique. Donnez le ton dès à présent : calme, direct et inflexible sur le respect des standards.",
+					audio: "Bienvenue à la tête de votre succursale. Aujourd'hui marque la fin de votre transition de conseiller personnel ou de directeur adjoint vers le rôle de décideur ultime de l'établissement. Diriger seul une succursale signifie que vous ne pouvez plus compter uniquement sur vos efforts individuels pour réussir.",
+				},
+				{
+					title: "Pourquoi cette formation est essentielle",
+					bullets: [
+						"La promotion modifie fondamentalement vos relations professionnelles",
+						"Les collaborateurs réussissent grâce à leurs efforts transactionnels",
+						"Les directeurs réussissent par la clarté, l'alignement et le contrôle",
+						"Les écarts non corrigés deviennent la culture officielle de la succursale"
+					],
+					layout: "standard",
+					notes: "Faites une pause de trois secondes après la lecture du point 4. Demandez à l'apprenant : « Vous souvenez-vous d'une succursale où le manager ignorait les retards ou les contournements de procédures ? Qu'est-il arrivé au reste de l'équipe ? » Concentrez la discussion strictement sur les résultats de performance.",
+					audio: "Abordons la réalité de votre nouveau rôle : la promotion change tout. En banque de détail, la culture de votre succursale est définie entièrement par le niveau de comportement le plus bas que vous choisissez de tolérer. Si vous ignorez un retard, vous établissez de fait un standard inférieur.",
+				},
+				{
+					title: "Le changement de posture",
+					bullets: [
+						"De producteur individuel à garant des standards",
+						"De collègue de soutien à décideur unique",
+						"De la recherche de popularité à la construction de la confiance",
+						"De la justification permanente à la communication d'impact"
+					],
+					layout: "standard",
+					notes: "La popularité est temporaire, tandis que la confiance opérationnelle se construit sur la cohérence et l'équité structurelle. Soulignez que le fait de trop parler ou de chercher à justifier ses d'écisions nuit à la crédibilité managériale.",
+					audio: "La plus grande erreur des nouveaux managers est de vouloir rester « l'un des membres de l'équipe » tout en occupant le fauteuil de patron. Vous ne pouvez pas jouer sur les deux tableaux. Vous devez cesser de vous justifier et parler avec impact.",
+				},
+				{
+					title: "Les caractéristiques d'un discours de leader",
+					bullets: [
+						"Clair : Débarrassé des tics de langage et des formules d'excuse",
+						"Bref : Épuré de toute justification inutile ou défense maladroite",
+						"Axé résultats : Concentré sur le rétablissement du standard",
+						"Calme : Un ton de voix mesuré et stable"
+					],
+					layout: "standard",
+					notes: "Adoptez ce comportement dès à présent. Parlez plus lentement, baissez légèrement le ton de votre voix et évitez les gestes parasites. Montrez à l'apprenant comment une phrase brève suivie d'un silence installe instantanément l'autorité dans la pièce.",
+					audio: "Le discours de leader est un outil d'action conçu pour faire avancer les choses, lever l'ambiguïté et maintenir le contrôle opérationnel. Les excuses permanentes sont défensives et circulaires. Le discours de leader est clair, court et orienté résultats.",
+				},
+				{
+					title: "Langage d'excuse vs Langage de leader",
+					layout: "comparison",
+					rows: [
+						["Je voulais juste mentionner que…", "Je veux être clair sur l'attente opérationnelle…"],
+						["Peut-être la prochaine fois…", "À l'avenir, le standard est…"],
+						["Je sais que vous êtes occupé, mais…", "Ceci requiert votre attention immédiate."],
+						["Pouvez-vous essayer de…", "J'ai besoin que vous…"],
+						["Je ne veux pas paraître sévère…", "Je souhaite aborder ce point directement et avec respect."]
+					],
+					notes: "Faites lire à l'apprenant les expressions de la colonne « Langage d'excuse », puis faites-lui lire immédiatement les équivalents de la colonne « Langage de leader ». Forcez-le à observer comment sa posture et sa présence vocale s'ajustent.",
+					audio: "Regardez la colonne de gauche. Les phrases comme « Je voulais juste mentionner » sont des amortisseurs de culpabilité. Elles indiquent à votre équipe que vos directives sont optionnelles. Le langage de leader, lui, pose des limites claires.",
+				},
+				{
+					title: "La structure du message d'impact",
+					bullets: [
+						"Énoncez le point directement",
+						"Définissez précisément l'attente",
+						"Expliquez brièvement la raison opérationnelle",
+						"Fixez l'étape suivante claire"
+					],
+					example: "« Notre huddle commence à 8h40 précises. J'ai besoin que vous soyez installé et prêt à 8h38. Respecter cet horaire nous permet de sécuriser notre coffre et d'ouvrir nos portes aux clients à 9h00 pile. Alignons-nous sur ce standard dès demain. »",
+					layout: "example",
+					notes: "Déconstruisez le script du huddle affiché à l'écran. Montrez à l'apprenant où s'arrête le constat, où commence l'attente, pourquoi la raison d'affaires est essentielle, et comment l'étape suivante verrouille l'engagement.",
+					audio: "Pour vous assurer que vos directives portent, utilisez une structure en quatre étapes : énoncez le constat, définissez l'attente, expliquez la raison d'affaires et verrouillez l'étape suivante. Examinez l'exemple du huddle sur votre écran.",
+				},
+				{
+					title: "Pourquoi les managers évitent de recadrer",
+					bullets: [
+						"Le piège de la popularité : le désir de rester apprécié",
+						"La crainte des réactions défensives ou émotionnelles",
+						"L'espoir passif : se convaincre que le problème se résoudra seul",
+						"Le cycle de la frustration : accumuler jusqu'à réagir avec colère"
+					],
+					layout: "standard",
+					notes: "Abordez la psychologie de l'évitement. Expliquez que fixer des limites rapidement et calmement est la démarche la plus bienveillante et professionnelle pour protéger le collaborateur et assurer la bonne marche de la succursale.",
+					audio: "Nous évitons de recadrer parce que la confrontation est inconfortable. Alors, nous gardons le silence en espérant que la situation s'arrange. Mais les dérives de performance ne se corrigent jamais seules ; elles s'accumulent et créent de la frustration.",
+				},
+				{
+					title: "Le modèle de responsabilisation",
+					bullets: [
+						"Identifier et nommer l'écart avec des faits objectifs",
+						"Expliciter l'impact opérationnel et client",
+						"Poser une question ouverte et écouter pour diagnostiquer",
+						"Réinstaller le standard et confirmer l'engagement"
+					],
+					layout: "diagram",
+					notes: "Démontrez que l'étape « Écouter et diagnostiquer » ne consiste pas à accepter les excuses, mais à déterminer si le non-respect du standard provient d'un problème de compétence ou d'un manque d'engagement.",
+					audio: "Voici votre outil principal. Face à un écart, ne jugez pas l'intention ou la personnalité ; nommez le fait. Énoncez les données brutes, expliquez l'impact opérationnel, diagnostiquez l'obstacle et réinstallez le standard.",
+				},
+				{
+					title: "Les dérives critiques à corriger en temps réel",
+					bullets: [
+						"Les retards aux huddles matinaux ou aux horaires de pause",
+						"L'abandon du guichet ou de la zone d'accueil sans relais",
+						"L'absence d'accueil proactif des clients dans le hall",
+						"Les contestations publiques ou les contournements de procédures"
+					],
+					layout: "standard",
+					notes: "Faites analyser ces comportements par l'apprenant. Ce sont les principales fuites opérationnelles qui dégradent l'expérience client, augmentent le niveau de risque et provoquent des échecs d'audit.",
+					audio: "En succursale, la discipline opérationnelle protège directement l'expérience client et limite les risques. Vous devez corriger immédiatement d'un ton absolu les retards, l'absence de relais au guichet, l'inactivité dans l'accueil et les écarts de procédure.",
+				},
+				{
+					title: "Script type : Retards au huddle",
+					bullets: [
+						"Énoncer le fait : 'Notre huddle commence à 8h40, aujourd'hui vous êtes arrivé après le début.'",
+						"Poser l'attente : 'J'ai besoin que vous soyez opérationnel avant le début.'",
+						"Préciser l'impact : 'Commencer à l'heure structure notre préparation collective.'",
+						"Engager l'action : 'Dès demain, soyez prêt à 8h38. Pouvez-vous vous y engager ?'"
+					],
+					layout: "script",
+					notes: "Lisez ce script d'un ton de voix neutre et égal. Évitez tout sarcasme ou agacement. Montrez à l'apprenant comment la régularité du débit renforce l'autorité du message.",
+					audio: "Voyons un recadrage en temps réel pour un retard au huddle. Notez l'enchaînement : « Notre huddle commence à 8h40, aujourd'hui vous êtes arrivé après le début ». C'est un fait indiscutable. Pas d'accusation personnelle, pas de leçon de morale.",
+				},
+				{
+					title: "Script type : Poste laissé sans relais",
+					bullets: [
+						"Énoncer le fait : 'Vous avez quitté votre guichet sans organiser de relais, le laissant vide.'",
+						"Préciser l'impact : 'Cela surcharge l'équipe et augmente l'attente client.'",
+						"Poser l'attente : 'Avant de vous absenter, prévenez-moi ou votre relais systématiquement.'",
+						"Diagnostiquer : 'Que s'est-il passé aujourd'hui ?'"
+					],
+					layout: "script",
+					notes: "Expliquez que poser la question « Que s'est-il passé aujourd'hui ? » n'est pas une incitation à valider les mauvaises habitudes, mais un outil d'analyse pour vérifier si le collaborateur dispose des moyens de réussir.",
+					audio: "Laisser un guichet sans surveillance crée une faille de sécurité immédiate et bloque le flux client. Voici votre outil verbal. Nommez l'écart, décrivez l'impact, réinstallez le standard de relais et interrogez pour comprendre.",
+				},
+				{
+					title: "Script type : Contestation d'une directive",
+					bullets: [
+						"Énoncer le fait : 'Vous avez contesté la directive devant toute l'équipe au lieu de m'en parler avant.'",
+						"Poser l'attente : 'J'apprécie vos retours, mais j'ai besoin d'un l'alignement immédiat sur le terrain.'",
+						"Définir la règle : 'En cas de désaccord, venez me voir dans mon bureau après l'exécution.'",
+						"Vérifier : 'Comprenez-vous la distinction ?'"
+                    ],
+					layout: "script",
+					notes: "Expliquez à l'apprenant que cette discussion doit obligatoirement se dérouler à l'abri des regards, dans le bureau de direction, et jamais devant les autres collaborateurs ou les clients.",
+					audio: "Une contestation publique affaiblit l'alignement de l'équipe. Si un collaborateur critique une directive devant les autres, isolez-le immédiatement dans votre bureau. Précisez que le débat d'idées est le bienvenu, mais en privé.",
+				},
+				{
+					title: "Script type : Écart de procédure ou risque",
+					bullets: [
+						"Énoncer le fait : 'Vous n'avez pas respecté la procédure de double contrôle obligatoire.'",
+						"Préciser l'impact : 'Cela fait peser un risque réglementaire et financier majeur sur notre succursale.'",
+						"Poser l'attente : 'Ce standard de sécurité n'est ni optionnel ni négociable.'",
+						"Diagnostiquer : 'Expliquez-moi votre démarche, puis nous allons reprendre le processus exact.'"
+					],
+					layout: "script",
+					notes: "Rappelez avec force que le directeur de succursale est le premier garant de la gestion des risques de son point de vente. Tout laxisme sur les contrôles internes prépare un incident d'audit.",
+					audio: "En banque, les raccourcis procéduraux mènent droit à l'incident de conformité ou au licenciement. Votre ton doit être absolu : énoncez l'écart, expliquez le risque, rappelez le caractère non négociable de la règle et reprenez le contrôle.",
+				},
+				{
+					title: "Le rythme de pilotage quotidien",
+					bullets: [
+						"08h35–08h40 : Contrôle d'ouverture et validation des accès guichets",
+						"08h40 : Lancement précis du huddle matinal et répartition des rôles",
+						"Matinée : Observation active du hall d'accueil et régulation des flux",
+						"Midi : Suivi rigoureux des rotations de pauses et micro-coaching"
+					],
+					layout: "timeline",
+					notes: "Expliquez à l'apprenant que s'il se montre tolérant sur l'horaire du huddle, l'équipe s'octroiera des libertés sur les pauses, l'accueil client et l'application des procédures.",
+					audio: "Pour tenir la ligne, vous devez installer une routine millimétrée. Votre journée débute à 8h35 par un contrôle opérationnel. Le huddle commence à 8h40 précises. Suivez les flux, régulez les pauses et analysez les résultats du jour.",
+				},
+				{
+					title: "Les indicateurs de votre réussite",
+					bullets: [
+						"Réaction immédiate : Écarts traités calmement sous 24 heures",
+						"Communication d'impact : Discours direct sans justification inutile",
+						"Régularité opérationnelle : Huddles et pauses s'enchaînent à la minute près",
+						"Posture managériale : Commandement serein, affirmé et respectueux"
+					],
+					layout: "standard",
+					notes: "Résumez les bénéfices clés de la formation. Rappelez à l'apprenant qu'il dispose maintenant de la boîte à outils verbale et de la structure requise pour diriger avec succès.",
+					audio: "Voyons à quoi ressemble votre succès opérationnel. Vous traitez les écarts calmement le jour même. Votre parole est claire et exempte de justifications inutiles. Votre succursale tourne comme une horloge suisse.",
+				},
+				{
+					title: "Vos engagements d'action",
+					bullets: [
+						"Un tic de langage d'excuse auquel je renonce dès aujourd'hui",
+						"Un standard opérationnel que je rétablis dès demain matin à l'ouverture",
+						"Une conversation de recadrage factuelle que je mène sous 24 heures"
+					],
+					layout: "contract",
+					notes: "Faites remplir les engagements d'action par l'apprenant sur son plan d'action. Validez la pertinence des points et fixez un rendez-vous de suivi dans une semaine.",
+					audio: "Nous ne terminons pas cette formation par de vagues résolutions, mais par des engagements fermes. Écrivez le tic de langage à bannir, le standard à rétablir dès demain et la conversation à mener sous 24 heures. Signez votre plan.",
+				}
+			]
+		};
+
+		// INTERACTIVE CHOICE TREE SIMULATOR DATA (Objection handling simulation)
+		const simScenarios = [{
+				title_en: "Scenario 1: Huddle Lateness (Marcus)",
+				title_fr: "Scénario 1 : Retard au huddle (Marcus)",
+				desc_en: "Marcus walks into the morning huddle late, holding a cup of coffee. He pushes back immediately.",
+				desc_fr: "Marcus arrive en retard au huddle du matin avec un café à la main. Interpellé, il se justifie immédiatement.",
+				objection_en: "“I was only three minutes late. The highway was jammed and I had to find a parking spot. It's not like the doors were open yet.”",
+				objection_fr: "« J'avais seulement trois minutes de retard. L'autoroute était bloquée et j'ai dû chercher une place. Ce n'est pas comme si l'agence était ouverte. »",
+				choices: {
+					A: {
+						text_en: "“I understand traffic is bad, Marcus, but we should really try to start at 8:40.”",
+						text_fr: "« Je comprends que le trafic soit difficile, Marcus, mais nous devrions vraiment essayer de commencer à 8h40. »",
+						feedback_en: "Weak approach. You apologized for holding the standard and framed the requirement as optional. Control decreases.",
+						feedback_fr: "Approche faible. Vous vous excusez de fixer le standard et présentez la règle comme facultative. Perte de contrôle.",
+						control: -15,
+						trust: 5
+					},
+					B: {
+						text_en: "“Your huddle starts at 8:40. If you cannot manage to get here on time, I will have to write you up.”",
+						text_fr: "« Le huddle commence à 8h40. Si vous n'êtes pas capable d'arriver à l'heure, je devrai lancer une procédure disciplinaire. »",
+						feedback_en: "Aggressive approach. You skipped the standard coaching structure, jumped straight to threats, and damaged team trust.",
+						feedback_fr: "Approche agressive. Vous contournez la structure de coaching, menacez directement et dégradez la confiance de l'équipe.",
+						control: 5,
+						trust: -25
+					},
+					C: {
+						text_en: "“Our huddle begins at 8:40, and today you arrived after we started. I need you ready before the huddle begins. Be ready by 8:38 tomorrow. Can you commit to that?”",
+						text_fr: "« Notre huddle commence à 8h40, aujourd'hui vous êtes arrivé après le début. J'ai besoin que vous soyez prêt avant que nous commencions. Soyez prêt à 8h38 demain. Pouvez-vous vous y engager ? »",
+						feedback_en: "Perfect! You applied the point-driven, fact-based gap model correctly without using emotional labels or losing your composure.",
+						feedback_fr: "Parfait ! Vous avez appliqué correctement le modèle factuel de constat d'écart, sans jugement et avec calme.",
+						control: 20,
+						trust: 15
+					}
+				}
+			},
+			{
+				title_en: "Scenario 2: Uncovered Floor (Sarah)",
+				title_fr: "Scénario 2 : Poste laissé sans surveillance (Sarah)",
+				desc_en: "Sarah steps away from her teller window during peak lobby hours without checking coverage or notifying anyone.",
+				desc_fr: "Sarah s'absente de son guichet en pleine heure d'affluence sans vérifier la couverture ni prévenir personne.",
+				objection_en: "“My schedule said 12:15. If I don't go exactly on my slot, my whole day gets pushed back, and I had to make an urgent call.”",
+				objection_fr: "« Mon planning indiquait 12h15. Si je ne pars pas sur mon créneau précis, tout mon après-midi est décalé, et je devais passer un appel urgent. »",
+				choices: {
+					A: {
+						text_en: "“I know you had a personal call, but the lobby was packed. Next time please try to let someone know.”",
+						text_fr: "« Je sais que vous aviez un appel, mais le hall était plein. La prochaine fois, essayez de prévenir quelqu'un. »",
+						feedback_en: "Weak approach. You validated the personal call over security protocol and framed handoffs as optional. Control drops.",
+						feedback_fr: "Approche faible. Vous privilégiez l'appel personnel au protocole de sécurité et présentez le relais comme facultatif. Perte de contrôle.",
+						control: -20,
+						trust: 5
+					},
+					B: {
+						text_en: "“Leaving the floor without telling me is a security violation. Do it again and you will be suspended.”",
+						text_fr: "« Quitter votre poste sans me prévenir est une faute grave. Si cela se reproduit, vous serez suspendue. »",
+						feedback_en: "Aggressive & defensive. Threatening immediate suspension without exploring facts creates fear and erodes branch trust.",
+						feedback_fr: "Agressif et défensif. Menacer de suspension immédiate sans analyser les faits génère de la peur et détruit la confiance.",
+						control: 10,
+						trust: -25
+					},
+					C: {
+						text_en: "“You left the line without notifying anyone, leaving the floor uncovered. That creates risks and delays. Before stepping away, notify me or your coverage partner every time. What happened today?”",
+						text_fr: "« Vous avez quitté votre poste sans prévenir personne, laissant la ligne sans surveillance. Cela crée un risque et de l'attente client. Avant de vous absenter, prévenez-moi systématiquement. Que s'est-il passé aujourd'hui ? »",
+						feedback_en: "Outstanding. You stated the facts, outlined the operational risk, established the clear handoff protocol, and invited feedback safely.",
+						feedback_fr: "Excellent. Vous avez énoncé les faits objectifs, précisé le risque, réinstallé la règle de relais et ouvert le dialogue pour comprendre.",
+						control: 20,
+						trust: 15
+					}
+				}
+			},
+			{
+				title_en: "Scenario 3: Public Skewing (David)",
+				title_fr: "Scénario 3 : Contestation de directive (David)",
+				desc_en: "David, a senior banker, loudly criticizes a new corporate lobby greeting policy in front of the entire team.",
+				desc_fr: "David, conseiller senior, critique ouvertement la nouvelle politique d'accueil clients du hall devant toute l'équipe.",
+				objection_en: "“This greeting rule is a complete waste of time. We have sales targets to hit. We aren't security guards.”",
+				objection_fr: "« Cette règle d'accueil est une perte de temps complète. Nous avons des objectifs commerciaux à atteindre, nous ne sommes pas des vigiles. »",
+				choices: {
+					A: {
+						text_en: "“David, I don't appreciate your attitude, but let's talk about how we can reach our sales goals anyway.”",
+						text_fr: "« David, je n'apprécie pas votre attitude, mais voyons plutôt comment nous pouvons atteindre nos objectifs malgré tout. »",
+						feedback_en: "Avoidant approach. You validated public insubordination and let the critique pass without correcting the alignment gap.",
+						feedback_fr: "Approche d'évitement. Vous valisez l'insubordination publique et laissez passer la critique sans corriger le manque d'alignement.",
+						control: -25,
+						trust: 5
+					},
+					B: {
+						text_en: "“Quiet, David! You will follow corporate orders whether you like it or not. I will not tolerate insubordination.”",
+						text_fr: "« Silence, David ! Vous suivrez les directives de l'entreprise que cela vous plaise ou non. Je ne tolérerai aucune insubordination. »",
+						feedback_en: "Public conflict escalation. Arguing and attacking an experienced senior banker in front of peers destroys team morale.",
+						feedback_fr: "Escalade conflictuelle publique. Argumenter et attaquer un collaborateur senior devant ses collègues détruit le climat de travail.",
+						control: 5,
+						trust: -30
+					},
+					C: {
+						text_en: "“I hear your concern. Let's focus on today's goals now. David, let's meet in my office right after this meeting to align.”",
+						text_fr: "« J'entends votre remarque. Restons concentrés sur nos objectifs du jour. David, retrouvons-nous dans mon bureau juste après le huddle pour nous aligner. »",
+						feedback_en: "Exceptional! You defused public debate, maintained meeting control, and moved the alignment discussion to a private setting.",
+						feedback_fr: "Exceptionnel ! Vous désamorcez le débat public, maintenez le contrôle du huddle et déplacez le recadrage d'attitude en privé.",
+						control: 20,
+						trust: 15
+					}
+				}
+			}
+		];
+
+		// Default planner inputs (English / French mapping)
+		const plannerDefaults = {
+			en: {
+				name: "Marcus",
+				gap: "you walked into the huddle circle at 8:43 AM",
+				impact: "it delays our morning vault checklist and reduces team alignment",
+				reset: "be fully logged in and ready in the huddle circle by 8:38 AM sharp"
+			},
+			fr: {
+				name: "Marcus",
+				gap: "vous êtes arrivé dans le cercle du huddle à 8h43",
+				impact: "cela retarde la validation opérationnelle du coffre et réduit la cohésion",
+				reset: "être connecté et installé dans le cercle du huddle à 8h38 précises"
+			}
+		};
+
+		// GLOBAL APP STATES
+		let currentLanguage = 'en'; // Defaults to English
+		let activeSlideIdx = 0;
+		let activeSimScenario = 0;
+		let activeBookGuide = 'crucial'; // Default selected book summary
+
+		// LOCAL STORAGE SCORE ADAPTERS
+		let stateControlScore = parseInt(localStorage.getItem('bm_score_control') || '80');
+		let stateTrustScore = parseInt(localStorage.getItem('bm_score_trust') || '80');
+
+		// GESTURE METRICS
+		let touchStartX = 0;
+		let touchEndX = 0;
+
+		window.onload = function() {
+			// Setup swipe gesture events
+			const surface = document.getElementById('slide-surface');
+			surface.addEventListener('touchstart', e => {
+				touchStartX = e.changedTouches[0].screenX;
+			}, { passive: true });
+
+			surface.addEventListener('touchend', e => {
+				touchEndX = e.changedTouches[0].screenX;
+				handleSwipe();
+			}, { passive: true });
+
+			// Bind global keyboard listeners
+			document.addEventListener('keydown', e => {
+				const activeTag = document.activeElement.tagName;
+				const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement.isContentEditable;
+				if (isTyping) return;
+				if (e.key === "ArrowRight") nextSlide();
+				if (e.key === "ArrowLeft") prevSlide();
+			});
+
+			// Set language display indicator
+			document.getElementById('lang-indicator').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
+
+			hydrateDropdown();
+			renderSlide(0);
+			updateSimulatorUI();
+			updateSimulatorScores();
+			switchSimScenarioLevel(1);
+			loadPlannerFromCache();
+			updateBuilderDefaults();
+			renderBookGuides();
+		};
+
+		// SWIPE RESOLVER
+		function handleSwipe() {
+			if (touchEndX < touchStartX - 50) nextSlide();
+			if (touchEndX > touchStartX + 50) prevSlide();
+		}
+
+		// BILINGUAL LOCALIZATION SWITCHER
+		function toggleLanguage() {
+			currentLanguage = (currentLanguage === 'en') ? 'fr' : 'en';
+			document.getElementById('lang-indicator').textContent = currentLanguage === 'en' ? 'FR' : 'EN';
+
+			// Translate static elements
+			document.querySelectorAll('[data-i18n]').forEach(el => {
+				const key = el.getAttribute('data-i18n');
+				if (i18n[currentLanguage][key]) {
+					el.textContent = i18n[currentLanguage][key];
+				}
+			});
+
+			hydrateDropdown();
+			renderSlide(activeSlideIdx);
+			updateSimulatorUI();
+			updateBuilderDefaults();
+			renderBookGuides();
+
+			showToast(currentLanguage === 'en' ? "Language set to English." : "Langue réglée sur le français.");
+		}
+
+		// HYDRATE JUMP MENU
+		function hydrateDropdown() {
+			const dropdown = document.getElementById('slide-jump-menu');
+			dropdown.innerHTML = '';
+
+			slideTranslations[currentLanguage].forEach((slide, idx) => {
+				const opt = document.createElement('option');
+				opt.value = idx;
+				opt.textContent = `${idx + 1}. ${slide.title}`;
+				dropdown.appendChild(opt);
+			});
+			const jumpMenu = document.getElementById('slide-jump-menu');
+			if (jumpMenu) {
+				jumpMenu.value = activeSlideIdx;
+			}
+		}
+
+		// VIEW VIEWPORT SWITCHER
+		function switchView(viewId) {
+			document.getElementById('view-deck-section').classList.add('hidden');
+			document.getElementById('view-metrics-section').classList.add('hidden');
+			document.getElementById('view-sim-section').classList.add('hidden');
+			document.getElementById('view-planner-section').classList.add('hidden');
+
+			document.getElementById('tab-deck').className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white";
+			document.getElementById('tab-metrics').className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white";
+			document.getElementById('tab-sim').className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white";
+			document.getElementById('tab-planner').className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-300 hover:text-white";
+
+			if (viewId === 'deck') {
+				document.getElementById('view-deck-section').classList.remove('hidden');
+				document.getElementById('tab-deck').className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-gold-500 text-navy-950 shadow";
+				renderSlide(activeSlideIdx);
+			} else if (viewId === 'metrics') {
+				document.getElementById('view-metrics-section').classList.remove('hidden');
+				document.getElementById('tab-metrics').className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-gold-500 text-navy-950 shadow";
+				renderBookGuides();
+			} else if (viewId === 'sim') {
+				document.getElementById('view-sim-section').classList.remove('hidden');
+				document.getElementById('tab-sim').className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-gold-500 text-navy-950 shadow";
+				updateSimulatorUI();
+			} else if (viewId === 'planner') {
+				document.getElementById('view-planner-section').classList.remove('hidden');
+				document.getElementById('tab-planner').className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-gold-500 text-navy-950 shadow";
+			}
+		}
+
+		// SLIDE PRESENTATION DESIGN RENDERING
+		function renderSlide(index) {
+			activeSlideIdx = index;
+			const jumpMenu = document.getElementById('slide-jump-menu');
+			if (jumpMenu) {
+				jumpMenu.value = index;
+			}
+			document.getElementById('slide-counter-badge').textContent = `Slide ${index + 1} / ${slideTranslations[currentLanguage].length}`;
+
+			const slide = slideTranslations[currentLanguage][index];
+			const canvas = document.getElementById('slide-canvas-body');
+
+			let html = ``;
+
+			if (slide.layout === "title") {
+				html = `
+                    <div class="space-y-4 max-w-2xl">
+                        <span class="px-2.5 py-1 bg-gold-500/15 text-gold-400 border border-gold-500/30 rounded-full text-[9px] font-extrabold uppercase tracking-widest">Management Program</span>
+                        <h2 class="text-2xl md:text-4xl font-extrabold text-white font-serif leading-tight">${slide.title}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t border-navy-800 mt-4">
+                            ${slide.bullets.map(b => `<div class="flex items-center gap-2 text-xs text-slate-300 font-semibold"><i class="fa-solid fa-circle-check text-gold-400 text-xxs"></i> ${b}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "standard") {
+				html = `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-7 space-y-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-white font-serif leading-tight">${slide.title}</h3>
+                            <ul class="space-y-2">
+                                ${slide.bullets.map(b => `
+                                    <li class="flex items-start gap-2.5">
+                                        <div class="mt-1 w-4 h-4 bg-navy-800 border border-navy-700 rounded flex items-center justify-center text-gold-400 text-[10px]">
+                                            <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                                        </div>
+                                        <span class="text-slate-300 text-xs md:text-sm font-semibold">${b}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div class="md:col-span-5 bg-navy-950 p-4 rounded-xl border border-navy-800 flex flex-col justify-between space-y-3">
+                            <h4 class="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Concept Pivot</h4>
+                            <p class="text-xs text-slate-400 italic">"Authority is established in the first 24 hours of observed variance."</p>
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "comparison") {
+				html = `
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-white font-serif">${slide.title}</h3>
+                        <div class="overflow-x-auto rounded-xl border border-navy-800">
+                            <table class="w-full text-left text-xs md:text-sm">
+                                <thead class="bg-navy-950 text-[9px] uppercase font-bold text-slate-400 border-b border-navy-800 tracking-wider">
+                                    <tr>
+                                        <th class="px-4 py-2.5 text-red-400">Weak / Apologetic Talk</th>
+                                        <th class="px-4 py-2.5 text-teal-400">Direct / Leader Talk</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-navy-800/60 bg-navy-900/60 font-medium">
+                                    ${slide.rows.map(row => `
+                                        <tr class="hover:bg-navy-800/40 transition">
+                                            <td class="px-6 py-3 text-slate-400 italic line-through font-light">${row[0]}</td>
+                                            <td class="px-6 py-3 text-white font-semibold">${row[1]}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "example") {
+				html = `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-3 space-y-3">
+                            <h3 class="text-xl font-bold text-white font-serif leading-tight">${slide.title}</h3>
+                            <div class="space-y-2">
+                                ${slide.bullets.map((b, i) => `
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-5 h-5 rounded-full bg-navy-800 text-[10px] font-bold text-slate-300 flex items-center justify-center border border-navy-700">${i+1}</span>
+                                        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">${b}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="md:col-span-9 bg-navy-950 p-5 rounded-xl border border-navy-800 shadow relative overflow-hidden">
+                            <p class="text-slate-200 text-xs leading-relaxed font-semibold italic border-l-4 border-gold-500 pl-3 py-1">${slide.example}</p>
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "script") {
+				html = `
+                    <div class="max-w-2xl mx-auto space-y-4">
+                        <h3 class="text-lg font-bold text-white font-serif text-center">${slide.title}</h3>
+                        <div class="bg-navy-950 border border-navy-800 p-5 rounded-xl space-y-2.5 relative overflow-hidden">
+                            <ul class="space-y-2">
+                                ${slide.bullets.map((b, i) => {
+                                    const split = b.split(': ');
+                                    return `
+                                        <li class="flex items-start gap-2 bg-navy-905 p-2 border border-navy-800 rounded-lg text-xs font-semibold">
+                                            <span class="px-2 py-0.5 bg-navy-850 text-gold-400 rounded text-[9px] uppercase font-bold border border-navy-700">${split[0]}</span>
+                                            <span class="text-white italic">${split[1]}</span>
+                                        </li>
+                                    `;
+                                }).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "timeline") {
+				html = `
+                    <div class="space-y-3 max-w-4xl">
+                        <h3 class="text-xl font-bold text-white font-serif">${slide.title}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            ${slide.bullets.map(b => {
+                                const split = b.split(': ');
+                                return `
+                                    <div class="p-3 bg-navy-950 rounded-xl border border-navy-800 flex flex-col justify-between space-y-1">
+                                        <span class="text-[9px] font-extrabold text-gold-400 bg-navy-900 border border-navy-800 px-2 py-0.5 rounded self-start tracking-wider uppercase">${split[0]}</span>
+                                        <p class="text-xs text-slate-300 font-semibold">${split[1]}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+			} else if (slide.layout === "contract") {
+				html = `
+                    <div class="max-w-2xl mx-auto space-y-3">
+                        <h3 class="text-lg font-bold text-white font-serif text-center">${slide.title}</h3>
+                        <div class="bg-navy-950 border-2 border-gold-500/20 p-6 rounded-xl space-y-3 relative overflow-hidden">
+                            <div class="space-y-3 text-xs text-slate-300 font-semibold">
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b border-navy-800 pb-1.5">
+                                    <span class="text-gold-400 uppercase font-bold tracking-wider w-36">1. Habit to Stop:</span>
+                                    <input type="text" placeholder="e.g. Apologizing before stating requirements" class="bg-transparent border-none text-slate-200 outline-none w-full text-xs">
+                                </div>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b border-navy-800 pb-1.5">
+                                    <span class="text-gold-400 uppercase font-bold tracking-wider w-36">2. Tomorrow Standard:</span>
+                                    <input type="text" placeholder="e.g. Huddle start at 8:40 sharp" class="bg-transparent border-none text-slate-200 outline-none w-full text-xs">
+                                </div>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b border-navy-800 pb-1.5">
+                                    <span class="text-gold-400 uppercase font-bold tracking-wider w-36">3. Next 24h Talk:</span>
+                                    <input type="text" placeholder="e.g. Resolve huddle tardiness with banker" class="bg-transparent border-none text-slate-200 outline-none w-full text-xs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+			}
+
+			canvas.innerHTML = DOMPurify.sanitize(html);
+			renderPresenterConsoleTab();
+		}
+
+		// DECK NAVIGATION CONTROLLER
+		function nextSlide() {
+			if (activeSlideIdx < slideTranslations[currentLanguage].length - 1) {
+				renderSlide(activeSlideIdx + 1);
+			} else {
+				showToast("Terminal: Last slide reached.");
+			}
+		}
+
+		// PREVIOUS SLIDE
+		function prevSlide() {
+			if (activeSlideIdx > 0) {
+				renderSlide(activeSlideIdx - 1);
+			}
+		}
+
+		// JUMP TO SPECIFIC SLIDE
+		function jumpToSlide(idx) {
+			renderSlide(parseInt(idx));
+		}
+
+		// SYNC PRESENTATION TRACKERS
+		function renderPresenterConsoleTab() {
+			const slide = slideTranslations[currentLanguage][activeSlideIdx];
+			document.getElementById('voiceover-script-box').textContent = `“${slide.audio}”`;
+		}
+
+		// SWITCH ACTIVE BOOK GUIDE CONTROLS (Study Guide Sub-Tab)
+		function switchBookGuide(bookKey) {
+			activeBookGuide = bookKey;
+
+			document.getElementById('btn-book-crucial').className = "px-3 py-1.5 text-xxs font-bold rounded-lg transition text-slate-300 hover:text-white";
+			document.getElementById('btn-book-point').className = "px-3 py-1.5 text-xxs font-bold rounded-lg transition text-slate-300 hover:text-white";
+
+			if (bookKey === 'crucial') {
+				document.getElementById('btn-book-crucial').className = "px-3 py-1.5 text-xxs font-bold rounded-lg transition bg-gold-500 text-navy-950";
+			} else {
+				document.getElementById('btn-book-point').className = "px-3 py-1.5 text-xxs font-bold rounded-lg transition bg-gold-500 text-navy-950";
+			}
+
+			renderBookGuides();
+		}
+
+		// RENDER BILINGUAL BOOK CHAPTERS & ACTION STEPS
+		function renderBookGuides() {
+			const container = document.getElementById('book-guide-container');
+			if (!container) return;
+
+			const list = bookSummaries[activeBookGuide][currentLanguage];
+			let html = ``;
+
+			list.forEach((ch, idx) => {
+				html += `
+                    <div class="p-4 bg-navy-900 border border-navy-800 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between border-b border-navy-800/60 pb-2">
+                            <span class="text-xxs font-extrabold text-teal-400 uppercase tracking-widest bg-teal-950/60 px-2 py-0.5 rounded border border-teal-900/60">${ch.ch}</span>
+                            <h4 class="text-xs md:text-sm font-bold text-white">${ch.title}</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 text-xs font-semibold">
+                            <div class="md:col-span-4 space-y-1">
+                                <span class="text-[9px] uppercase tracking-wider text-gold-400 block">${currentLanguage === 'en' ? 'Main Point' : 'Idée Maîtresse'}</span>
+                                <p class="text-slate-300 leading-relaxed text-xxs md:text-xs italic">"${ch.point}"</p>
+                            </div>
+                            <div class="md:col-span-5 space-y-1">
+                                <span class="text-[9px] uppercase tracking-wider text-gold-400 block">${currentLanguage === 'en' ? 'Actionable Steps' : 'Actions Concrètes'}</span>
+                                <ul class="space-y-1 text-slate-400 text-xxs md:text-xs list-disc list-inside">
+                                    ${ch.steps.map(step => `<li>${step}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="md:col-span-3 space-y-1">
+                                <span class="text-[9px] uppercase tracking-wider text-gold-400 block">${currentLanguage === 'en' ? 'Expected Outcomes' : 'Résultats Attendus'}</span>
+                                <ul class="space-y-1 text-slate-400 text-xxs md:text-xs list-none">
+                                    ${ch.outcomes.map(out => `<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-400 text-[10px]"></i><span>${out}</span></li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+			});
+
+			container.innerHTML = DOMPurify.sanitize(html);
+		}
+
+		// BRANCHING SIMULATOR RUNTIME
+		function switchSimScenarioLevel(level) {
+			activeSimScenario = level - 1;
+
+			document.getElementById('sim-nav-1').className = "w-8 h-8 rounded-lg text-xs font-bold bg-navy-800 hover:bg-navy-700 text-slate-300";
+			document.getElementById('sim-nav-2').className = "w-8 h-8 rounded-lg text-xs font-bold bg-navy-800 hover:bg-navy-700 text-slate-300";
+			document.getElementById('sim-nav-3').className = "w-8 h-8 rounded-lg text-xs font-bold bg-navy-800 hover:bg-navy-700 text-slate-300";
+
+			document.getElementById(`sim-nav-${level}`).className = "w-8 h-8 rounded-lg text-xs font-bold bg-gold-500 text-navy-950 shadow";
+
+			updateSimulatorUI();
+		}
+
+		// UPDATE SIMULATOR SCENARIOS UI
+		function updateSimulatorUI() {
+			const sc = simScenarios[activeSimScenario];
+
+			document.getElementById('sim-case-title').textContent = (currentLanguage === 'en') ? sc.title_en : sc.title_fr;
+			document.getElementById('sim-case-desc').textContent = (currentLanguage === 'en') ? sc.desc_en : sc.desc_fr;
+			document.getElementById('sim-case-objection').textContent = (currentLanguage === 'en') ? sc.objection_en : sc.objection_fr;
+
+			document.getElementById('opt-text-a').textContent = (currentLanguage === 'en') ? sc.choices.A.text_en : sc.choices.A.text_fr;
+			document.getElementById('opt-text-b').textContent = (currentLanguage === 'en') ? sc.choices.B.text_en : sc.choices.B.text_fr;
+			document.getElementById('opt-text-c').textContent = (currentLanguage === 'en') ? sc.choices.C.text_en : sc.choices.C.text_fr;
+
+			document.getElementById('sim-feedback-box').classList.add('hidden');
+		}
+
+		// EVALUATE SIMULATOR RESPONSE
+		function evaluateChoice(choiceKey) {
+			const sc = simScenarios[activeSimScenario];
+			const choice = sc.choices[choiceKey];
+
+			// Protect against simulator metrics overflows
+			stateControlScore = Number(stateControlScore) || 0;
+			stateTrustScore = Number(stateTrustScore) || 0;
+
+			// Adjust scores with boundary clamping
+			stateControlScore = Math.max(0, Math.min(100, stateControlScore + choice.control));
+			stateTrustScore = Math.max(0, Math.min(100, stateTrustScore + choice.trust));
+
+			// Set to storage with protection
+			try {
+				localStorage.setItem('bm_score_control', stateControlScore);
+				localStorage.setItem('bm_score_trust', stateTrustScore);
+			} catch (err) {
+				console.error('LocalStorage failed:', err);
+			}
+
+			updateSimulatorScores();
+
+			// Display Feedback Box
+			const feedbackBox = document.getElementById('sim-feedback-box');
+			const feedbackText = document.getElementById('sim-feedback-text');
+
+			feedbackBox.classList.remove('hidden');
+			feedbackText.textContent = (currentLanguage === 'en') ? choice.feedback_en : choice.feedback_fr;
+
+			showToast("Metrics updated!");
+		}
+
+		// SYNC METRICS DISPLAY
+		function updateSimulatorScores() {
+			document.getElementById('score-control').textContent = `${stateControlScore}%`;
+			document.getElementById('score-trust').textContent = `${stateTrustScore}%`;
+
+			document.getElementById('score-control').className = (stateControlScore < 50) ? "text-red-400 font-bold" : "text-teal-400 font-bold";
+			document.getElementById('score-trust').className = (stateTrustScore < 50) ? "text-red-400 font-bold" : "text-gold-400 font-bold";
+		}
+
+		// SCRIPT PLANNER PERSISTENCE
+		function updateBuilderDefaults() {
+			const data = plannerDefaults[currentLanguage];
+
+			// Hydrate input values only if empty
+			if (!document.getElementById('plan-name-input').value) document.getElementById('plan-name-input').value = data.name;
+			if (!document.getElementById('plan-gap-input').value) document.getElementById('plan-gap-input').value = data.gap;
+			if (!document.getElementById('plan-impact-input').value) document.getElementById('plan-impact-input').value = data.impact;
+			if (!document.getElementById('plan-reset-input').value) document.getElementById('plan-reset-input').value = data.reset;
+		}
+
+		// COMPILE PLAN DIRECTIVES
+		function compileDirectPlan() {
+			const name = document.getElementById('plan-name-input').value.trim() || "[Name]";
+			const gap = document.getElementById('plan-gap-input').value.trim() || "[Gap Fact]";
+			const impact = document.getElementById('plan-impact-input').value.trim() || "[Impact]";
+			const reset = document.getElementById('plan-reset-input').value.trim() || "[Standard Action]";
+
+			const script = `“${name}, ${currentLanguage === 'en' ? 'I want to address this directly:' : 'Je souhaite aborder ce point directement :'} ${gap}. ${currentLanguage === 'en' ? 'This has an operational impact because' : 'Cela a un impact opérationnel car'} ${impact}. ${currentLanguage === 'en' ? 'Going forward, the standard is' : 'À l’avenir, la règle est de'} ${reset}. ${currentLanguage === 'en' ? 'Can you commit to this? Let’s check progress on Friday.' : 'Pouvez-vous vous y engager ? Faisons un point ce vendredi.'}”`;
+
+			const terminal = document.getElementById('plan-terminal-output');
+			terminal.className = "bg-navy-900 border border-teal-500/40 p-5 rounded-lg flex items-center justify-start text-left";
+			terminal.innerHTML = DOMPurify.sanitize(
+				`<p class="text-white text-xs md:text-sm italic font-semibold leading-relaxed border-l-4 border-gold-500 pl-3">${script}</p>`
+			);
+
+			// Write to LocalStorage
+			try {
+				localStorage.setItem('bm_plan_name', name);
+				localStorage.setItem('bm_plan_gap', gap);
+				localStorage.setItem('bm_plan_impact', impact);
+				localStorage.setItem('bm_plan_reset', reset);
+			} catch (err) {
+				console.error('LocalStorage failed:', err);
+			}
+
+			showToast(currentLanguage === 'en' ? "Directive saved!" : "Directive enregistrée !");
+		}
+
+		// LOAD FROM LOCAL CACHE
+		function loadPlannerFromCache() {
+			if (localStorage.getItem('bm_plan_name')) {
+				document.getElementById('plan-name-input').value = localStorage.getItem('bm_plan_name');
+				document.getElementById('plan-gap-input').value = localStorage.getItem('bm_plan_gap');
+				document.getElementById('plan-impact-input').value = localStorage.getItem('bm_plan_impact');
+				document.getElementById('plan-reset-input').value = localStorage.getItem('bm_plan_reset');
+			}
+		}
+
+		// RESET CACHE DATA
+		function resetPlanner() {
+			document.getElementById('plan-name-input').value = '';
+			document.getElementById('plan-gap-input').value = '';
+			document.getElementById('plan-impact-input').value = '';
+			document.getElementById('plan-reset-input').value = '';
+
+			localStorage.removeItem('bm_plan_name');
+			localStorage.removeItem('bm_plan_gap');
+			localStorage.removeItem('bm_plan_impact');
+			localStorage.removeItem('bm_plan_reset');
+
+			document.getElementById('plan-terminal-output').innerHTML = `
+                <span class="text-xs text-slate-500 italic">Fill in variables to render your leadership directive card.</span>
+            `;
+			showToast(currentLanguage === 'en' ? "Cache cleared!" : "Mise en cache réinitialisée !");
+		}
+
+		// COPY TO CLIPBOARD
+		function copyPlannedScript() {
+			const p = document.querySelector('#plan-terminal-output p');
+			if (!p) {
+				showToast(currentLanguage === 'en' ? "Compile script first!" : "Compilez d'abord le script !");
+				return;
+			}
+			executeDirectCopy(p.textContent.trim());
+			showToast(currentLanguage === 'en' ? "Script copied!" : "Script copié !");
+		}
+
+		// TOOL UTILITIES (Modern Clipboard API & Optimized Animations)
+		async function executeDirectCopy(text) {
+			try {
+				await navigator.clipboard.writeText(text);
+			} catch (err) {
+				console.error('Clipboard copy failed:', err);
+				showToast(currentLanguage === 'en' ? "Clipboard failed." : "Échec du presse-papiers.");
+			}
+		}
+
+		// DYNAMIC TOAST UTILITIES
+		function showToast(msg) {
+			const t = document.getElementById('toast');
+			document.getElementById('toast-text').textContent = msg;
+
+			// Performance-optimized class list toggles
+			t.classList.remove('translate-y-20', 'opacity-0');
+			t.classList.add('translate-y-0', 'opacity-100');
+
+			setTimeout(() => {
+				t.classList.remove('translate-y-0', 'opacity-100');
+				t.classList.add('translate-y-20', 'opacity-0');
+			}, 2500);
+		}
+	</script>
+</body>
+
+</html>
+
+```
